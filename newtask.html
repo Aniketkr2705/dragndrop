@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drag and Drop Interface</title>
+  <style>
+    .container {
+      width: 200px;
+      height: 300px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      vertical-align: top;
+      padding: 10px;
+    }
+
+    .item {
+      padding: 5px;
+      background-color: #f1f1f1;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    .item.dragging {
+      opacity: 0.5;
+    }
+
+    #container1 {
+      margin-right: 20px;
+    }
+
+    #successMessage {
+      display: none;
+      color: green;
+      margin-top: 10px;
+    }
+
+    #resetButton {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container1" class="container">
+    <div class="item" draggable="true">Item 1</div>
+    <div class="item" draggable="true">Item 2</div>
+    <div class="item" draggable="true">Item 3</div>
+  </div>
+  <div id="container2" class="container"></div>
+
+  <p id="successMessage">Item successfully dropped!</p>
+  <button id="resetButton">Reset</button>
+
+  <script>
+    // Get the containers
+    const container1 = document.getElementById('container1');
+    const container2 = document.getElementById('container2');
+
+    // Get the success message element
+    const successMessage = document.getElementById('successMessage');
+
+    // Get the reset button
+    const resetButton = document.getElementById('resetButton');
+
+    // Add event listeners for drag events on container 1 items
+    const items = container1.getElementsByClassName('item');
+    Array.from(items).forEach(item => {
+      item.addEventListener('dragstart', dragStart);
+    });
+
+    // Add event listeners for drop events on container 2
+    container2.addEventListener('dragover', dragOver);
+    container2.addEventListener('drop', drop);
+
+    // Drag start event handler
+    function dragStart(event) {
+      event.dataTransfer.setData('text/plain', event.target.innerHTML);
+      event.target.classList.add('dragging');
+    }
+
+    // Drag over event handler
+    function dragOver(event) {
+      event.preventDefault();
+    }
+
+    // Drop event handler
+    function drop(event) {
+      event.preventDefault();
+      const data = event.dataTransfer.getData('text/plain');
+      const newItem = document.createElement('div');
+      newItem.classList.add('item');
+      newItem.innerHTML = data;
+      container2.appendChild(newItem);
+      successMessage.style.display = 'block';
+    }
+
+    // Reset button click event handler
+    resetButton.addEventListener('click', function() {
+      container2.innerHTML = '';
+      successMessage.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
